@@ -35,18 +35,8 @@ pub fn ls(args:Vec<String>) -> i8 {
 
     let current_dir = env::current_dir().unwrap(); // Get current dir
 
-    // let mut file = fs::read_dir(current_dir).expect("Can't find files"); // Read the file of the current dir
-    
-    // while file {
-    //     // println!("{}",file.unwrap().expect("test").path().display());
-    //     file = file.unwrap().next();
-    // }
+    let mut iterator = fs::read_dir(current_dir).unwrap(); // Create an iterator on the current directory
 
-    let mut iterator = fs::read_dir(current_dir).unwrap();
-    // for i in 0..13 {
-    //     let entry = iterator.next();
-    //     println!("{}", entry.unwrap().unwrap().path().display());
-    // }
     let mut flag = 0;
     while flag == 0 {
 

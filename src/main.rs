@@ -177,8 +177,14 @@ fn get_paths_from_env() -> Vec<String> {
 // Get the current directory of the CB Shell
 fn get_current_dir() -> String {
 
-    let current_dir = env::current_dir().unwrap();
-    return current_dir.display().to_string()
+    let current_dir = env::current_dir();
+
+    if current_dir.is_ok() {
+        return current_dir.unwrap().display().to_string();
+    } else {
+        eprint("Error while getting the current directory");
+        return "";
+    }
 }
 
 
