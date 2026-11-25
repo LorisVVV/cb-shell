@@ -24,18 +24,27 @@ fn main() {
     // Main loop
     while status == 1 {
 
-        let current_dir = get_current_dir(); // Get current directory
-        ask_for_cmd(current_dir); // Print current directory and symbol for input of command
+        ask_for_cmd(); // Print current directory and symbol for input of command
         let args = get_cmd(); // Get and split line to get command
         status = exec_cmd(args, &paths, &exts); // Exec process and change status
     }
 
 }
 
-// Print current directory and arrow for input
-fn ask_for_cmd(current_dir : String) {
-    print!("CB {current_dir} > ");
-    stdout().flush().unwrap();
+// Get and print current directory and arrow for input
+fn ask_for_cmd() {
+
+    // Get current dir from env
+    let current_dir = env::current_dir();
+
+    // If current dir is found display the command input prompt
+    if current_dir.is_ok() {
+        print!("CB {} > ", current_dir.unwrap().display().to_string());
+        stdout().flush().unwrap();
+    } else { // If not display error message
+        eprint!("Error while getting the current directory");
+    }
+
 }
 
 // Get the command input
@@ -174,18 +183,6 @@ fn get_paths_from_env() -> Vec<String> {
     return paths
 }
 
-// Get the current directory of the CB Shell
-fn get_current_dir() -> String {
-
-    let current_dir = env::current_dir();
-
-    if current_dir.is_ok() {
-        return current_dir.unwrap().display().to_string();
-    } else {
-        eprint("Error while getting the current directory");
-        return "";
-    }
-}
 
 
 // Little intro ascii art

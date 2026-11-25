@@ -2,3 +2,4 @@
 - rajouter un ls
 - faire auto complétion
 - pwd
+- history

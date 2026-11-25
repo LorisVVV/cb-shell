@@ -33,26 +33,49 @@ pub fn ls(args:Vec<String>) -> i8 {
     use std::env;
 
 
-    let current_dir = env::current_dir().unwrap(); // Get current dir
+    let current_dir = env::current_dir(); // Get current dir
 
-    let mut iterator = fs::read_dir(current_dir).unwrap(); // Create an iterator on the current directory
+    // Check current dir
+    if !current_dir.is_ok() {
+        eprint!("Couldn't find current directory");
+        return 1;
+    }
 
-    let mut flag = 0;
+    // Initiate the vec of dir and files
+    // let mut dirs = Vec::new();
+    // let mut files = Vec::new();
+
+    // Create an iterator on the current directory (unwraping current dir be cause checked above)
+    let mut iterator = fs::read_dir(current_dir.unwrap()).unwrap(); 
+
+    let mut flag = 0; // Initialize flag
     while flag == 0 {
 
+        // Get the entry
         let entry = iterator.next();
 
+        // Check if there is more entry (ending condition)
         if entry.is_none() {
             flag = 1;
         } else {
-            println!("{}", entry.unwrap().unwrap().path().display());
+
+            let path = entry.unwrap().unwrap().path(); // Get path
+            let file_name = path.file_name().expect("no file name").to_str().unwrap(); // Strip file name from path
+
+            if file_name.contains('.') {
+                // files.push(file_name);
+                println!("   - {}", file_name);
+            } else {
+                // dirs.push(file_name);
+                println!(" d - {}", file_name);
+            }
         }
     }
 
     return 1
 }
 
-// Exec a command by calling the cmd.exe file and give it the args (starting at the second as the first will be 'wrapcmd')
+// Exec a command by calling the cmd.exe file and give it the args (args starting at the second as the first will be 'wrapcmd')
 pub fn wrapcmd(args:Vec<String>) -> i8 {
     use std::process::{Command};
 
