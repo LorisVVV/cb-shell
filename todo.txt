@@ -7,3 +7,4 @@
     - if space put it in ''
 - pwd
 - history
+- accès refusé dans ls
