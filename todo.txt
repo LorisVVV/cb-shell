@@ -1,5 +1,9 @@
-- chercher variable d'env PATH puis lancer l'executable via cette variable A AMELIORER
-- rajouter un ls
+
 - faire auto complétion
+    - complete half word - done
+
+    - change the input
+    - if multiple shows the first one and switch on each tab
+    - if space put it in ''
 - pwd
 - history

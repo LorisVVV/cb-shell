@@ -1,7 +1,6 @@
 use std::io::{stdin, BufRead, stdout, Write};
 use std::env;
-use std::process::{Command};
-use std::path::Path;
+use std::fs::File;
 
 mod builtins;
 
@@ -10,6 +9,7 @@ fn main() {
 
     // Print ascii art
     // print_intro();
+
 
     // Get the different extension of file available
     let exts = get_exts_from_env();
@@ -110,40 +110,10 @@ fn exec_cmd(args:Vec<String>, paths:&Vec<String>, exts:&Vec<String>) -> i8 {
         status = builtins::ls(args);
     } else { 
         // Try to find the program in the PATH files and execute it
-        exec_extern_program(args, paths, exts);
+        status = builtins::exec_extern_program(args, paths, exts);
     }
 
     return status
-}
-
-// Execute an extern program by searching in every path with every exts
-fn exec_extern_program(args:Vec<String>, paths:&Vec<String>, exts:&Vec<String>) {
-
-    let mut programs = Vec::new(); // Initialize the vec
-
-    // For every paths in the variable env and every extension possible
-    for p in paths {
-        for e in exts {
-            let program_name = args[0].clone() + &e;
-            let program_path = Path::new(&p).join(&program_name); // Creation of a path : path/to/program.extension
-
-            // If the path exist
-            if program_path.is_file() {
-                // println!("{} in {}", program_name, program_path.to_string_lossy());
-                programs.push(program_path); // The path is pushed to the vec
-            }
-        }
-    }
-
-    // If there is at least one program
-    if programs.len() > 0 {
-        // Launching the first program in the vec
-        Command::new(&programs[0]).args(&args[1..]).spawn().expect("Process couldn't be launch").wait().expect("We cannot be sure that the process is not a zombie now...");
-    } else {
-        // Else print an error
-        eprintln!("Command {} wasn't found...", &args[0]);
-    }
-
 }
 
 // Get all the type of extension from the env variable
@@ -182,7 +152,6 @@ fn get_paths_from_env() -> Vec<String> {
 
     return paths
 }
-
 
 
 // Little intro ascii art
