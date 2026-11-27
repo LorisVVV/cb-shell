@@ -9,7 +9,7 @@ pub fn cd(args:Vec<String>) -> i8 {
     use std::env;
     use std::path::Path;
 
-    if args.len() == 1 {
+    if args.len() < 2 {
         // Go to homedir if no args (args [0] is "cd") are given
         if !env::set_current_dir(env::home_dir().unwrap().as_path()).is_ok() {
             eprintln!("Couldn't change directory :(")
@@ -20,7 +20,7 @@ pub fn cd(args:Vec<String>) -> i8 {
 
         // Set the current dir and if is not ok display error message
         if !env::set_current_dir(&path).is_ok() {
-            eprintln!("Couldn't change directory :(")
+            eprintln!("Directory \" {} \" not found", &args[1]);
         }
     }   
 
@@ -68,17 +68,26 @@ pub fn get_current_files() -> Vec<String> {
     // Initialie return vec
     let mut result:Vec<String> = Vec::new();
 
-    // Get current dir
-    let current_dir = env::current_dir(); 
+    // Get current dir unc for unchecked
+    let mut current_dir_unc = env::current_dir(); 
 
     // Check current dir
-    if !current_dir.is_ok() {
-        eprint!("Couldn't find current directory");
+    if !current_dir_unc.is_ok() {
+        eprintln!("Couldn't find current directory");
         return result;
     }
 
+    let current_dir = current_dir_unc.unwrap();
+
     // Create an iterator on the current directory (unwraping current dir be cause checked above)
-    let mut iterator = fs::read_dir(current_dir.unwrap()).unwrap(); 
+    let mut iterator_unc = fs::read_dir(&current_dir); 
+
+    if !iterator_unc.is_ok() {
+        eprintln!("Couldn't find the entries for directory {}, you might not have the correct rights", current_dir.display());
+        return result;
+    }
+
+    let mut iterator = iterator_unc.unwrap();
 
     let mut there_is_more_entry = true; // Initialize flag
     while there_is_more_entry { // While there is more entry
